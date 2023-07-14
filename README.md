@@ -29,6 +29,7 @@ File Generation:
 This script allows the user to specify the laser properties and capsule dimensions to be simulated. These must be of the laser profile form and capsule design described in the papers. The comments in the code should give an idea of how this can be done. Multiple files can be generated at any one time using the functionality in the script. This will call Analytic4Layers to do the meshing, and then produce the input decks in the MultiFile folder (this may need to be created and pointed to beforehand for the code to run).
 
 **Meshing**
+This script creates the Lagrangian mesh over the capsule required for Hyades. The theory this is based on is described in the appendix of my thesis. Note that the meshing is a challenging problem, and the script may not perform well for capsules that are not close to those used in my thesis.
 
 **File writer**
 
@@ -44,4 +45,36 @@ Following hyades batch load, this allows the results from the previous batch run
 
 **AllData**
 Reads in all the data stored in the central repository from hyades batch load, to form a large database of implosions. These can then be plotted against each other to identify e.g. highest gain implosions. Different criteria can be set e.g. only show sims with CR<16. Each sim is giving a unique identifier, so that the settings used in that sim can be accessed.
+
+
+
+Other code:
+
+**Distinguishable colours**
+Not created by me - downloaded from file exchange. Used in batch plots to generate plots with maximally distinguishable colours.
+
+Copyright for distinguishable colours:
+
+Copyright (c) 2010-2011, Tim Holy
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
