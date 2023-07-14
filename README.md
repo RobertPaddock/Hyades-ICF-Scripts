@@ -50,6 +50,11 @@ Reads in all the data stored in the central repository from hyades batch load, t
 
 Other code:
 
+**AuxHeatingResults_Git**
+Shows how the Results.mat files generated from Hyades Batch Load for the auxiliary heating files can then be used to estimate gains, and produce comparisons of aux heating for different capsules
+
+
+
 **Distinguishable colours**
 Not created by me - downloaded from file exchange. Used in batch plots to generate plots with maximally distinguishable colours.
 
