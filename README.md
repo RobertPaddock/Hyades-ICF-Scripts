@@ -29,10 +29,10 @@ File Generation:
 This script allows the user to specify the laser properties and capsule dimensions to be simulated. These must be of the laser profile form and capsule design described in the papers. The comments in the code should give an idea of how this can be done. Multiple files can be generated at any one time using the functionality in the script. This will call Analytic4Layers to do the meshing, and then produce the input decks in the MultiFile folder (this may need to be created and pointed to beforehand for the code to run).
 
 **Meshing**
-This script creates the Lagrangian mesh over the capsule required for Hyades. The theory this is based on is described in the appendix of my thesis. Note that the meshing is a challenging problem, and the script may not perform well for capsules that are not close to those used in my thesis.
+This script creates the Lagrangian mesh over the capsule required for Hyades. The theory this is based on is described in the appendix of my thesis. Note that the meshing is a challenging problem, and the script may not perform well for capsules that are not close to those used in my thesis. Automatically called by the batch generator.
 
 **File writer**
-
+Writes an input deck. Automatically called by the batch generator.
 
 
 Batch analysis

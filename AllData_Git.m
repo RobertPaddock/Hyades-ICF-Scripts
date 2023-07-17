@@ -2,14 +2,16 @@
 %specified. 0 gives all the stored information on a given data point
 Mode=2;
 
-%Choose which data sets to include
+%Choose which data sets to include (this is done as these data sets save to
+%different folders in the central storage, depending on how the questions
+%are answered during the batch load script)
 Include3Pulse=0;
 Include4Pulse=1;
 IncludeFoamOnly=0;
 IncludeSecondLaser=0;
 
-%Compare3and4=1 makes these different colours, while off treats them the
-%same and uses colour for different variables.
+%Compare3and4=1 makes these (i.e. 3 pulse and 4 pulse sequences) different colours, while off treats them the
+%same and uses colour to represent CR.
 Compare3and4=1;
 
 Paths=[];
@@ -103,7 +105,7 @@ PowerAll = [PowerAll; zeros(1, size(PowerAll,2))];
     DataSeries = [DataSeries, repmat(i,1, length(GainAll))];
 end
 
-%For All data plot, plot Gain against Energy, with CR giving the colour
+%% Mode 1 - For All data plot, plot Gain against Energy, with CR giving the colour
 if Mode==1
 fig1 = figure('DeleteFcn','datacursormode');
     pointsize = 20;
@@ -118,7 +120,7 @@ fig1 = figure('DeleteFcn','datacursormode');
     caxis([13 17])
 end
 
-%Set a criteria. New variables are created, containing the data for just
+%% Mode 2 - Set a criteria. New variables are created, containing the data for just
 %those points that fit the criteria. Plot.
 if Mode==2
     Criteria1 = OverallCR<16;
@@ -150,8 +152,9 @@ if Mode==2
     colorbar()
     dcm_obj = datacursormode(fig1);
     set(dcm_obj,'UpdateFcn',{@myupdatefcn,CRPlot, PathPlot, DataSeriesPlot, ValidFilesPlot});
-  end
-    
+end
+  
+  %% Mode 0 - From plots, find the path identifier and file number for a simulation. Specifying here allows the settings and data for that sim to be printed.
  if Mode == 0
      PathIdentifier = 24;
      FileNumber = 102;

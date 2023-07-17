@@ -91,15 +91,15 @@ end
 
 fprintf(fileID, 'qeos 1 1.86e9 3.0e-04 \r\n');
 if FoamOnly==1
-    fprintf(fileID, 'eos /work3/clf/rad_hydro/hyades/EOS-Opacity/SESAME//eos_32.dat 2 \r\n');
+    fprintf(fileID, 'eos /work4/clf/rad_hydro/hyades/EOS-Opacity/EOS//eos_32.dat 2 \r\n');
 else
     fprintf(fileID, 'qeos 2 1.86e9 0.253 \r\n');
 end
 if Regions==3
-fprintf(fileID, 'eos /work3/clf/rad_hydro/hyades/EOS-Opacity/SESAME//eos_32.dat 3 \r\nc\r\n');
+fprintf(fileID, 'eos /work4/clf/rad_hydro/hyades/EOS-Opacity/EOS//eos_32.dat 3 \r\nc\r\n');
 else
-    fprintf(fileID, 'eos /work3/clf/rad_hydro/hyades/EOS-Opacity/SESAME//eos_32.dat 3 \r\n');
-    fprintf(fileID, 'eos /work3/clf/rad_hydro/hyades/EOS-Opacity/SESAME//eos_32.dat 4 \r\nc\r\n');
+    fprintf(fileID, 'eos /work4/clf/rad_hydro/hyades/EOS-Opacity/EOS//eos_32.dat 3 \r\n');
+    fprintf(fileID, 'eos /work4/clf/rad_hydro/hyades/EOS-Opacity/EOS//eos_32.dat 4 \r\nc\r\n');
 end
 
 fprintf(fileID, 'eosxtrp  1  1  2  1  2 \r\n');
