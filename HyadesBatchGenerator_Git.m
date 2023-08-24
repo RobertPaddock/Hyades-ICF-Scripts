@@ -62,7 +62,7 @@
 
 
 %% Use Selection to choose between different examples - or create your own!
-Selection=108;
+Selection=103;
 
 
 
@@ -228,27 +228,27 @@ if Selection==103
     %We now specify the file for the unheated capsule. This is used to
     %identify the bang time, and the vapour mass - so that the timings and
     %amount of heating energy are appropriate.
-    UnheatedFile = '\\aldaq1.physics.ox.ac.uk\Archer\Robert\Tat summer project\SummerProjectsMatlab\ElectronHeating_thirdharmonic\0.5Size4PulseCutoff.cdf';
+    UnheatedFile = '\\aldaq1.physics.ox.ac.uk\Archer\Robert\Desktop Hyades Files\Dated\230106\TwoColourPt5\0pt5TwoColour.cdf';
     
     Pulse1Time = 0;
-    Pulse2Time = [0.9].*10^-9;
-    Pulse3Time = [3.8].*10^-9;
-    Pulse4Time = [6.2].*10^-9;
-    SecondLaserOnTime = [9.2]*10^-9;
+    Pulse2Time = [1.95].*10^-9;
+    Pulse3Time = [4.35].*10^-9;
+    Pulse4Time = [8.05].*10^-9;
+    SecondLaserOnTime = [10]*10^-9;
 
     Pulse1Power = 2*((0.351/Wavelength)^2)*SizeMod^2;
     Pulse2Power = 14*((0.351/Wavelength)^2)*SizeMod^2;;
     Pulse3Power = 98*((0.351/Wavelength)^2)*SizeMod^2;
     Pulse4Power = 692.13*((0.351/Wavelength)^2)*SizeMod^2;
     RiseTime = 2e-10;
-    LaserEndTime = [11].*10^-9;
+    LaserEndTime = [12.8].*10^-9;
     
-    RadiusVapour = [0.125];
-    RadiusIce = [0.137];
+    RadiusVapour = [0.123];
+    RadiusIce = [0.136];
     RadiusCH=0.1425;
-    DensityVapour=[0.0012];
-    ChangeTimeAt = [0 5 8 11 15].*10^-9;
-    TimeSpacing = [1E-10 1E-11 1E-10 1E-11];
+    DensityVapour=[0.00102];
+    ChangeTimeAt = [0 12 14 16].*10^-9;
+    TimeSpacing = [1E-10 1E-11 1E-10];
     
     %We turn the auxiliary heating on, and create the following empty
     %variables (filled in the next chunk of code). The amount of heating
@@ -643,7 +643,7 @@ PulseOnTime = ((LaserPower([1 PulseIndices(1:end-1)])-c)./m) - 0.0005E-7;
 PulseOnAndRiseTime = (LaserPower([PulseIndices(1:end)])-c(1:end))./m(1:end)- 0.0005E-7;
 Type=1;
 Plots=0;
-AnalysisCondensed
+Analysis_Git
 end
 
 
