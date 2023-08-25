@@ -274,7 +274,7 @@ if Selection==103
     HeatingTimings = [HeatingTimings; HeatingStartTime HeatingStartTime+0.0001 HeatingStartTime+0.0005 HeatingStartTime+0.0006];
     Heating = [Heating; 0 HeatingConv HeatingConv 0];
     HeatingZones = [HeatingZones; IceBoundaryIndex];
-    ChangeTimeAt = [ChangeTimeAt; 0 11 HeatingStartTime HeatingStartTime+0.002 HeatingStartTime+0.02 Time(end).*10^9];
+    ChangeTimeAt = [ChangeTimeAt; 0 HeatingStartTime-1 HeatingStartTime HeatingStartTime+0.002 HeatingStartTime+0.02 Time(end).*10^9];
     TimeSpacing = [TimeSpacing;  1E-10 1E-11 1E-13 1E-12 2E-11 ];
     HeatingEnergy = [HeatingEnergy; HeatingkJ];
     end
@@ -349,7 +349,7 @@ if Selection==104
     HeatingTimings = [HeatingTimings; HeatingStartTime HeatingStartTime+0.0001 HeatingStartTime+0.0005 HeatingStartTime+0.0006];
     Heating = [Heating; 0 HeatingConv HeatingConv 0];
     HeatingZones = [HeatingZones; IceBoundaryIndex];
-    ChangeTimeAt = [ChangeTimeAt; 0 11 HeatingStartTime HeatingStartTime+0.002 HeatingStartTime+0.02 Time(end).*10^9];
+    ChangeTimeAt = [ChangeTimeAt; 0 HeatingStartTime-1 HeatingStartTime HeatingStartTime+0.002 HeatingStartTime+0.02 Time(end).*10^9];
     TimeSpacing = [TimeSpacing;  1E-10 1E-11 1E-13 1E-12 2E-11 ];
     HeatingEnergy = [HeatingEnergy; HeatingkJ];
     end
