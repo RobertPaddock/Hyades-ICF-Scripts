@@ -1,6 +1,6 @@
 # Hyades-ICF-Scripts
 
-Here I have tried to share some of the code that I used to generate and analyse Hyades simulations for the large scale campaigns described in my thesis, and in the papers https://doi.org/10.1098/rsta.2020.0224 and https://doi.org/10.1017/S0022377822000265.
+Here I have tried to share some of the code that I used to generate and analyse Hyades simulations for the large scale campaigns described in my thesis (https://ora.ox.ac.uk/objects/uuid:5f012160-db39-4f22-b273-1e7b8ddf050d), and in the papers https://doi.org/10.1098/rsta.2020.0224 and https://doi.org/10.1017/S0022377822000265.
 Some errors may exist, and the code will likely need to be adjusted for other purposes - but it should hopefully provide a useful start point.
 
 The different scripts here call each other, so will all need to be saved in the same location. They have a number of features. I have tried to group similar scripts below:
