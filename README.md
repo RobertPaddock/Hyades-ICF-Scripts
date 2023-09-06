@@ -15,7 +15,7 @@ Allows the user to specify a single Hyades .cdf file. This is opened, and the da
 As above, but for simulations performed in the altenative code Helios (the front scripts allow a shared analysis script to be used, despite the two codes).
 
 **Analysis**
-Takes the opened file, and runs analysis to plot the data, and calculate key variables (CR, gain, implosion velocity etc.). The adiabat reported by this script cannot be trusted. Calls the Report script for the final plots.
+Takes the opened file, and runs analysis to plot the data, and calculate key variables (CR, gain, implosion velocity etc.). Calls the Report script for the final plots.
 
 **Report**
 Produces the large, full screen figure with a number of key plots.
