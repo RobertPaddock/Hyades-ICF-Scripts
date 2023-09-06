@@ -9,7 +9,7 @@
 
 clear all
 
-file = 'C:\Users\paddock\Documents\Hyades\SavedFiles\Cutoffs\0.25Size\0.25Size4PulseCutoff.cdf'
+file = '\\aldaq1.physics.ox.ac.uk\Archer\Robert\Desktop Hyades Files\SavedFiles\Cutoffs\0.25Size\0.25Size4PulseCutoff.cdf'
 
 % ncdisp(file) %This command allows you to see all saved variables (uncomment to use)
 

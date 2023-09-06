@@ -32,6 +32,7 @@ strL=sprintf(', Neutrons produced = %e \n', max(Neutrons));
 strM=sprintf('Parametric Limit of %.3e (Should be under 10^1^4) \n', ParametricLimit);
 strN=(['Burn Up fraction = ' ,num2str(BurnUpFraction), '%', newline]);
 strO = ['Shell K.E. = ', num2str(ShellKineticEnergyValue/1000, '%.3f'), ' kJ, Hydroefficiency = ', num2str(HydroEfficiencyValue, '%.2f'), '%, Total Efficiency = ', num2str(TotalEfficiencyValue, '%.2f'), '%' newline];
+strQ=(['Adiabat (Goncharov defn.) = ' ,num2str(AdiabatGoncharovValue), newline]);
 strP=strrep(file, '\', '\\');
 if strP(1) == 'C'
 strfile1 = strP(1:39);
@@ -44,7 +45,7 @@ strfile = [strfile1 newline strfile2];
 else 
     strfile = strP;
 end
-str = [strA strB strC strD strE strF strG strH strI strJ strK strL strM strN strO newline strfile];
+str = [strA strB strC strD strE strF strG strH strI strJ strK strL strM strN strO strQ newline strfile];
 annotation('textbox',dim,'String',str)
 
 subplot(2,6,3)
@@ -119,17 +120,12 @@ pos(1) = pos(1) - 0.02;
 set(gca, 'Position', pos)
 
 subplot(2,6, [9,10]);
-yyaxis left
-plot(Time./10^-9, MinIsentrope)
-ylabel('Min Isentrope Parameter');
-ylim([0 5]);
-yyaxis right
-plot(Time./10^-9, AveragedIsentrope)
-ylabel('Average Isentrope Parameter');
-xlabel('Time (ns)');
-ylim([0 5])
-xline(BangTime./10^-9, 'k', {'Bang Time'});
-xline(Time(MinStagnationIndex)./10^-9, '--k');
+plot(Time.*10^9, AdiabatGoncharov)
+xlabel('Time (ns)')
+ylabel('Adiabat (Goncharov definition)')
+xlim([0 BangTime.*10^9+0.2])
+xline(BangTime.*10^9)
+xline(Time(AdiabatTimeIndex).*10^9)
 
 subplot(2,6, [11,12]);
     yyaxis left

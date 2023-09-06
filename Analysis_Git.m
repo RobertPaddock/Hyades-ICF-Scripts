@@ -130,7 +130,11 @@ IFARCraxton = IFAR(IFARIndex);
 %Calculate Implosion Velocity
 ImplosionVelocity = (sum(ShellVolume.*ShellVelocity)./sum(ShellVolume));
  
-%Calculate min and average shell isentrope
+%Calculate min and average shell isentrope. This uses the conventional
+%formula from Atzeni's textbook, but I have found that the value massively
+%varies depends on the range averaging is performed over. I therefore no
+%logner use this value - see the Goncharov definition of the adiabat used
+%below.
 CHZones = Density(:,1)>1;
 NonCHZones = repmat((ones(size(Density,1), 1) - CHZones), 1,length(Time));
 %AveragedIsentrope = sum(ShellVolume.*ShellIsentrope.*NonCHZones)./sum(ShellVolume.*NonCHZones);
@@ -285,6 +289,91 @@ fhs = EstimatedBangTimeAlphaDep/HSCompressionalEnergy;
 % Qtot = EstimatedBangTimeAlphaDep/EnergyAtMinHotspot
 end
 
+
+
+%Inverse Pressure and density scale lengths
+InversePressureScaleLength = abs( diff(log(Pressure))./diff(Radius(1:end-1:end, :)));
+InversePressureScaleLength(isnan(InversePressureScaleLength)) = 0.001;
+InversePressureScaleLength(isinf(InversePressureScaleLength)) = 0.001; 
+
+InverseDensityScaleLength = abs( diff(log(Density))./diff(Radius(1:end-1:end, :)));
+InverseDensityScaleLength(isnan(InverseDensityScaleLength)) = 0.001;
+InverseDensityScaleLength((InverseDensityScaleLength==0)) = 0.001;
+InverseDensityScaleLength(isinf(InverseDensityScaleLength)) = 0.001; 
+
+Zones = repmat([1:size(Radius,1)-2].', 1, length(Time));
+
+%Adiabat calculated according to Phys. Plasmas 21, 056315 (2014). Integral between two limits. Lower limit (mb) 
+%is inner shell position, defined as max density / e. Outer limit is the
+%amount of mass mshk overtaken by the return shock at bang time. Adiabat is
+%evaluated when ablation front (given as peak density / 2) = 2/3 * initial
+%vapour raidus.
+try        
+%First, import and define some important quantities in cgs units.      
+hbar = 10^7 .* 6.626e-34 ./ (2*pi());
+emass = 1000* 9.1093837e-31;
+umass = 1000* 1.660e-27;
+Mu = (((3*pi()^2)^(2/3))/5)  *  ((hbar^2)*zbar.^(5/3))./(emass*(2.5*umass).^(5/3));
+Pressurecgs = 10^7.*Pressure;
+ZoneLength = diff(Radius);
+
+% Then, we used inverse pressure scale length to identify return shock
+% position at bang time.
+[~, MaxPressureScaleLengthIndex] = max(InversePressureScaleLength(1:CHBoundaryIndex,:));
+GoncharovShellOuterIndex = MaxPressureScaleLengthIndex(BangTimeIndex);
+if GoncharovShellOuterIndex>CHBoundaryIndex
+    GoncharovShellOuterIndex = CHBoundaryIndex;
+end
+
+
+%For each time step, first find position of inner limit. Then, perform the
+%adiabat calculation for each time step.
+for i = 1:length(Time);
+    [~, MaxDensityIndex(i)] = max(Density(HSIndex(i):ShellIndex(i), i));
+    MaxDensityIndex(i) = HSIndex(i) + MaxDensityIndex(i) -1;
+    GoncharovShellThreshold = (Density(1:MaxDensityIndex(i), i))<Density(MaxDensityIndex(i), i)/2.718;
+    try
+    GoncharovShellIndex(i) = find(GoncharovShellThreshold, 1, 'last');
+    mb(i) = sum(Mass(1:GoncharovShellIndex(i),i));
+    mshk(i) = sum(Mass(1:GoncharovShellOuterIndex,i));
+    AdiabatIntegrand(:,i) = (Pressurecgs(:,i)./(Mu(:,i).*Density(:,i).^(5/3))) .* 4.* pi() .* Density(:,i) .* Radius(2:end,i).^2;
+    AdiabatIntegral(i) = trapz(Radius(GoncharovShellIndex(i):GoncharovShellOuterIndex, i), AdiabatIntegrand(GoncharovShellIndex(i):GoncharovShellOuterIndex, i));
+    AdiabatIntegralB(i) = sum((ZoneLength(GoncharovShellIndex(i):GoncharovShellOuterIndex, i).* AdiabatIntegrand(GoncharovShellIndex(i):GoncharovShellOuterIndex, i)));
+   AdiabatGoncharov(i) = AdiabatIntegralB(i) ./ (mshk(i) - mb(i));
+
+    catch
+        GoncharovShellIndex(i) = nan;
+         mb(i) = nan;
+          AdiabatIntegrand(:,i)= nan;
+          AdiabatIntegral(i) = nan;
+             AdiabatGoncharov(i)  = nan;
+                 AdiabatIntegralB(i) = nan;
+    end;
+    
+end
+
+%Then identify position of ablation front.
+AblationThreshold=Density>max(Density)*0.5;
+AblationIndex = arrayfun(@(x)find(AblationThreshold(:,x),1,'last'),1:size(AblationThreshold,2), 'UniformOutput',false);
+tf = cellfun('isempty',AblationIndex); % true for empty cells
+AblationIndex(tf) = {1};
+AblationIndex= [AblationIndex{:}];
+AblationIndexReshaped=sub2ind(size(Radius),AblationIndex,1:length(Time));
+AblationFrontRadius=Radius(AblationIndexReshaped);
+
+%Evalutate adiabat at this time.
+[~, AdiabatTimeIndex] = min(abs(AblationFrontRadius(1:BangTimeIndex) - (2*IceBoundary(1)/3)));
+AdiabatGoncharovValue = AdiabatGoncharov(AdiabatTimeIndex);
+
+%For quick comparison, calculate Adiabat in each zone according to
+%conventional formula
+Pressure(isnan(Pressure))=0;
+Pressure(Pressure<0)=0;
+DegeneratePressure = (2.17*10^12 * 1e-7) *(Density.^(5/3));
+AdiabatFermiTimeZones = Pressure./DegeneratePressure;
+
+catch
+    end
 
 
 
@@ -569,17 +658,12 @@ ylabel('Velocity (km/s)');
 xlabel('Time (ns)');
 xline(BangTime./10^-9, 'k');
 nexttile;
-yyaxis left
-plot(Time./10^-9, MinIsentrope)
-ylabel('Min Isentrope Parameter');
-ylim([0 9]);
-yyaxis right
-plot(Time./10^-9, AveragedIsentrope)
-ylabel('Average Isentrope Parameter');
-xlabel('Time (ns)');
-ylim([0 9])
-xline(BangTime./10^-9, 'k', {'Bang Time'});
-xline(Time(MinStagnationIndex)./10^-9, '--k', {'0.001% Neutrons'})
+plot(Time.*10^9, AdiabatGoncharov)
+xlabel('Time (ns)')
+ylabel('Goncharov adiabat')
+xlim([0 BangTime.*10^9+0.2])
+xline(BangTime.*10^9)
+xline(Time(AdiabatTimeIndex).*10^9)
 nexttile;
 yyaxis left
 if isnan(max(Neutrons))~=1
@@ -813,5 +897,59 @@ xline(BangTime*10^9, '--k');
 xline(Time(MaxVelocityIndex)*10^9, '--k');
 xline(Time(FlatEnergyIndex)*10^9, '--r');
 end
+
+figure
+subplot(1,3,1)
+plot(Time.*10^9, AdiabatGoncharov)
+xlabel('Time (ns)')
+ylabel('Goncharov adiabat')
+xlim([0 BangTime.*10^9+0.2])
+xline(BangTime.*10^9)
+xline(Time(AdiabatTimeIndex).*10^9)
+        
+subplot(1,3,2)
+surf(Time*10^9,Zones, InversePressureScaleLength);
+xlim([0 max(Time)*10^9]);
+set(gca,'ColorScale','log');
+colormap(jet);
+title('Return Shock');
+xlabel('Time (ns)');
+ylabel('Cell number');
+zlabel('Mass Density (g/cm^3)');
+shading interp
+colorbar
+view(2)
+hold on
+h = yline(CHBoundaryIndex, 'w', 'LineWidth', 2);
+h = yline(IceBoundaryIndex, 'w', 'LineWidth', 2);
+xline(BangTime.*10^9, 'w', 'LineWidth',2);
+plot3(Time*10^9,MaxPressureScaleLengthIndex, max(InversePressureScaleLength), '--w');
+xlim([(BangTime*10^9 - 2) (BangTime.*10^9 +1)])
+ylim([0 CHBoundaryIndex+100])
+
+subplot(1,3,3)
+surf(Time(1:end-1)*10^9,Zones(IceBoundaryIndex:CHBoundaryIndex,1:end-1), AdiabatFermiTimeZones(IceBoundaryIndex:CHBoundaryIndex, 1:end-1)+0.001);
+xlim([0 max(Time)]*10^9);
+ylim([IceBoundaryIndex CHBoundaryIndex]);
+zlim([0 max(max(AdiabatFermiTimeZones))])
+colormap(jet);
+set(gca,'ColorScale','log');
+title('Adiabat in ice');
+xlabel('Time (ns)');
+ylabel('Cell number');
+zlabel('Pressure (GPa)');
+shading interp
+caxis([0.1 100])
+colorbar
+view(2)
+hold on
+plot3(Time*10^9,HSIndex, max(AdiabatFermiTimeZones), 'linestyle', '--','color', 'w', 'linewidth', 2);
+plot3(Time*10^9,ShellIndex, max(AdiabatFermiTimeZones), 'linestyle', '--','color', 'w', 'linewidth', 2);
+plot3(Time*10^9,GoncharovShellIndex, max(AdiabatFermiTimeZones), 'linestyle', '-','color', 'w', 'linewidth', 2);
+plot3(Time*10^9,repmat(GoncharovShellOuterIndex,1, length(Time)), max(AdiabatFermiTimeZones), 'linestyle', '-','color', 'w', 'linewidth', 2);
+plot3([BangTime BangTime]*10^9,[IceBoundaryIndex CHBoundaryIndex], [max(max(AdiabatFermiTimeZones)) max(max(AdiabatFermiTimeZones))], 'linestyle', '-','color', 'k', 'linewidth', 2);
+plot3([Time(AdiabatTimeIndex) Time(AdiabatTimeIndex)]*10^9,[IceBoundaryIndex CHBoundaryIndex], [max(max(AdiabatFermiTimeZones)) max(max(AdiabatFermiTimeZones))], 'linestyle', '-','color', 'k', 'linewidth', 2);
+hold off
+
 end
 
