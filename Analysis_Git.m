@@ -216,6 +216,11 @@ MolesDT = MassDT/5;
 MoleculesDT = MolesDT*6.022*10^23;
 BurnUpFraction = (max(Neutrons)/MoleculesDT)*100;
 
+%Burn averaged quantities, from Lindl, Physics of Plasmas, 25, 122704. 
+TimeLength = diff(Time);
+BurnAvTemp = sum((TimeLength.').*sum(IonTemp(:,2:end).*TNOutput(:,2:end)))./sum((TimeLength.').*sum(TNOutput(:,2:end)));
+BurnAvPressure = sum((TimeLength.').*sum(PressureGPa(:,2:end).*TNOutput(:,2:end)))./sum((TimeLength(:,2:end).').*sum(TNOutput(:,2:end)));
+
 %Find Bang Time and Stagnation Time (according to Craxton)
 NeutronsPerTime = [0, diff(Neutrons)];
 [~, BangTimeIndex] = max(NeutronsPerTime);
